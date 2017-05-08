@@ -2,21 +2,31 @@ const express = require('express');
 const router = express.Router();
 var stripe = require('stripe')("sk_live_HcVULo30ZwZDZxZbzcENaOYi");
 
+var admin = require("firebase-admin");
+
+var serviceAccount = require("path/to/serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert("rh-groceries-firebase-adminsdk-2wcrw-02de137d16.json"),
+  databaseURL: "https://rh-groceries.firebaseio.com"
+});
+
 /* GET api listing. */
 router.get('/', (req, res) => {
   res.send('api works');
 });
 
-router.get('/create/:email', (req, res) => {
-  console.log("Email: " + req.params.email);
+router.get('/create/:id/:email', (req, res) => {
+  // console.log("Email: " + req.params.email);
 
   stripe.accounts.create({
     country: "US",
     managed: false,
     email: req.params.email + ""
   }, function(err, account) {
-    console.log(err);
-    console.log(account);
+    // console.log(err);
+    // console.log(account);
+    admin.database().ref(`/users/${req.params.id}/stripeAccount`).set(account);
   });
 
   // keys:
