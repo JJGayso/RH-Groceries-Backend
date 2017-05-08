@@ -5,7 +5,7 @@ var stripe = require('stripe')("sk_live_HcVULo30ZwZDZxZbzcENaOYi");
 var admin = require("firebase-admin");
 
 admin.initializeApp({
-  credential: admin.credential.cert("rh-groceries-firebase-adminsdk-2wcrw-02de137d16.json"),
+  credential: admin.credential.cert(__dirname + "/rh-groceries-firebase-adminsdk-2wcrw-02de137d16.json"),
   databaseURL: "https://rh-groceries.firebaseio.com"
 });
 
