@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-var stripe = require('stripe')("sk_live_HcVULo30ZwZDZxZbzcENaOYi");
+var stripe = require('stripe')("sk_test_MtREatSFEPgIlVztY7Bn5sJ2");
 
 var admin = require("firebase-admin");
 
@@ -35,6 +35,68 @@ router.get('/create/:id/:email', (req, res) => {
   res.sendStatus(200);
 
 });
+
+router.get('/pay/:payerId/:destinationId/:amount', (req, res) => {
+  // console.log(req.params.payerKey);
+  // console.log(req.params.destinationId);
+  // console.log(req.params.amount);
+
+
+  stripe.tokens.create({
+    card: {
+      "number": '4242424242424242',
+      "exp_month": 12,
+      "exp_year": 2018,
+      "cvc": '123'
+    }
+  }, function(err, token) {
+    // console.log(err);
+    stripe.charges.create({
+      amount: Number(req.params.amount) * 100,
+      currency: "usd",
+      source: token.id,
+      destination: {
+        account: req.params.destinationId,
+      },
+    }).then(function(charge) {
+      console.log("Completed Transaction");
+      console.log(charge);
+    });
+  });
+
+  // stripe.tokens.create({
+  //   customer: req.params.payerId,
+  // }, {
+  //   stripe_account: "acct_1AGyScD67QtxS1M3",
+  // }).then(function(token) {
+  // // asynchronously called
+  // stripe.charges.create({
+  //     amount: Number(req.params.amount) * 100,
+  //     currency: "usd",
+  //     source: token.id,
+  //   }, {
+  //     stripe_account: req.params.payerId,
+  //   }).then(function(charge) {
+  //   // asynchronously called
+  //   });
+  // });
+
+  // stripe.charges.create({
+  //   amount: Number(req.params.amount) * 100,
+  //   currency: "usd",
+  //   source: ,
+  //   destination: {
+  //     account: "acct_1AGyScD67QtxS1M3",
+  //   },
+  // }).then(function(charge) {
+  //   console.log("Completed Transaction");
+  //   console.log(charge);
+  // });
+
+  res.sendStatus(200);
+
+});
+
 
 
 module.exports = router;
