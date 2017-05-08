@@ -52,7 +52,7 @@ router.get('/pay/:payerId/:destinationId/:amount', (req, res) => {
   }, function(err, token) {
     // console.log(err);
     stripe.charges.create({
-      amount: parseInt(req.params.amount) * 100,
+      amount: parseInt(req.params.amount * 100),
       currency: "usd",
       source: token.id,
       destination: {
